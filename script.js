@@ -3,6 +3,7 @@
 
   const WA_NUM = '393395998469';
   const WA_MSG_DEFAULT = 'Ciao%20Solomon%2C%20ho%20bisogno%20di%20soccorso%20stradale%20a%20Brescia.%20Potete%20intervenire%3F';
+  let leafletLoader = null;
 
 
   /* ══ Cookie Banner ══ */
@@ -250,11 +251,11 @@
   const lbClose = document.getElementById('lightboxClose');
   if (lightbox && lbImg) {
     // Desktop gallery items
-    document.querySelectorAll('.gallery-item, .gallery-slide').forEach(item => {
+    document.querySelectorAll('.gd-item, .gallery-slide').forEach(item => {
       item.addEventListener('click', () => {
         const img = item.querySelector('img');
         if (!img) return;
-        lbImg.src = img.src;
+        lbImg.src = img.dataset.full || img.currentSrc || img.src;
         lbImg.alt = img.alt;
         lightbox.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -290,6 +291,40 @@
   const BRESCIA = [45.5416, 10.2118];
   let geoMap = null, userMarker = null, accCircle = null, currentPos = null;
 
+  function loadLeafletAssets() {
+    if (window.L) return Promise.resolve(window.L);
+    if (leafletLoader) return leafletLoader;
+
+    leafletLoader = new Promise((resolve, reject) => {
+      if (!document.querySelector('link[data-leaflet]')) {
+        const css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        css.crossOrigin = '';
+        css.dataset.leaflet = 'true';
+        document.head.appendChild(css);
+      }
+
+      const existing = document.querySelector('script[data-leaflet]');
+      if (existing) {
+        existing.addEventListener('load', () => resolve(window.L), { once: true });
+        existing.addEventListener('error', reject, { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      script.crossOrigin = '';
+      script.defer = true;
+      script.dataset.leaflet = 'true';
+      script.onload = () => resolve(window.L);
+      script.onerror = reject;
+      document.body.appendChild(script);
+    });
+
+    return leafletLoader;
+  }
+
   function fmtCoords(lat, lng) { return lat.toFixed(5) + ', ' + lng.toFixed(5); }
   function mapsUrl(lat, lng)   { return 'https://www.google.com/maps?q=' + lat + ',' + lng; }
 
@@ -319,6 +354,8 @@
       if (userMarker) geoMap.removeLayer(userMarker);
       if (accCircle)  geoMap.removeLayer(accCircle);
       userMarker = L.marker([lat, lng], {
+        interactive: false,
+        keyboard: false,
         icon: L.divIcon({ className: 'geo-marker-user-wrap', html: '<span class="geo-marker-user"></span>', iconSize: [18, 18], iconAnchor: [9, 9] })
       }).addTo(geoMap);
       if (accuracy) {
@@ -397,16 +434,25 @@
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(geoMap);
     L.marker(BRESCIA, {
+      interactive: false,
+      keyboard: false,
       icon: L.divIcon({ className: 'geo-marker-base-wrap', html: '<span class="geo-marker-base"></span>', iconSize: [12, 12], iconAnchor: [6, 6] })
     }).addTo(geoMap).bindPopup('<strong>Solomon Car Assistance</strong><br>Soccorso Stradale Brescia 24/7');
     setTimeout(() => geoMap.invalidateSize(), 100);
+    if (currentPos) showFound(currentPos.lat, currentPos.lng, currentPos.accuracy);
   }
 
   if (geoMapEl) {
-    initMap();
+    const ensureGeoMap = () => loadLeafletAssets().then(() => { initMap(); }).catch(() => {});
 
-    if (geoLocateBtn) geoLocateBtn.addEventListener('click', locateUser);
-    if (geoRetryBtn)  geoRetryBtn.addEventListener('click', locateUser);
+    if (geoLocateBtn) geoLocateBtn.addEventListener('click', () => {
+      ensureGeoMap();
+      locateUser();
+    });
+    if (geoRetryBtn)  geoRetryBtn.addEventListener('click', () => {
+      ensureGeoMap();
+      locateUser();
+    });
 
     if (geoCopyBtn) {
       geoCopyBtn.addEventListener('click', async () => {
@@ -427,9 +473,14 @@
     // Invalidate map when section enters viewport
     const geoSec = document.getElementById('posizione');
     if (geoSec) {
-      new IntersectionObserver(entries => {
-        entries.forEach(e => { if (e.isIntersecting) setTimeout(() => geoMap?.invalidateSize(), 150); });
-      }, { threshold: 0.2 }).observe(geoSec);
+      const geoObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          ensureGeoMap().then(() => setTimeout(() => geoMap?.invalidateSize(), 150));
+          geoObserver.disconnect();
+        });
+      }, { threshold: 0.2 });
+      geoObserver.observe(geoSec);
     }
   }
 
