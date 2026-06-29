@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://www.solomoncarassistance.it/sitemap.xml
+
+# Solomon Car Assistance – Soccorso Stradale Brescia 24/7
+# Tel: +393395998469
