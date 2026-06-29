@@ -77,8 +77,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .btn-gold:hover{background:var(--yellow-hover);transform:translateY(-1px)}
 .btn-white{background:var(--white);color:var(--red)}
 .btn-white:hover{background:var(--yellow);color:var(--blue)}
-.btn-wa-cta{background:#128c4a;color:var(--white)}
-.btn-wa-cta:hover{background:#0f7a40}
+.btn-wa-cta{background:#0b6a38;color:var(--white)}
+.btn-wa-cta:hover{background:#095a30}
 .btn-lg{padding:14px 28px;font-size:1rem}
 
 /* ═══════════════ HEADER ═══════════════ */
@@ -207,8 +207,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .hero-btns{display:flex;flex-direction:column;gap:10px;align-items:stretch;animation:fadeUp .6s ease .35s both}
 .btn-hero-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 22px;background:var(--yellow);color:var(--black);font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;box-shadow:0 0 30px var(--yellow-glow);transition:all .22s}
 .btn-hero-primary:hover{background:var(--yellow-hover);box-shadow:0 0 44px rgba(255,180,0,.55);transform:translateY(-2px)}
-.btn-hero-wa{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 22px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.45);border-radius:999px;font-size:.88rem;font-weight:700;color:rgba(255,255,255,.9);transition:all .22s}
-.btn-hero-wa:hover{background:var(--wa);border-color:var(--wa);color:var(--white);transform:translateY(-2px)}
+.btn-hero-wa{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 22px;background:rgba(11,106,56,.86);border:1px solid rgba(37,211,102,.38);border-radius:999px;font-size:.88rem;font-weight:700;color:rgba(255,255,255,.98);transition:all .22s}
+.btn-hero-wa:hover{background:#095a30;border-color:#0f7a40;color:var(--white);transform:translateY(-2px)}
 
 @media(min-width:480px){
   .hero-btns{flex-direction:row;flex-wrap:wrap;align-items:center}
@@ -647,8 +647,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 @media(min-width:1024px){.footer-inner{grid-template-columns:2fr 1fr 1fr 1.5fr;gap:40px}}
 
 /* ═══════════════ FLOATING WA ═══════════════ */
-.floating-wa{position:fixed;bottom:18px;right:16px;z-index:90;display:flex;align-items:center;gap:8px;padding:12px 18px 12px 14px;background:#128c4a;color:var(--white);border-radius:999px;font-size:1.3rem;box-shadow:0 4px 18px rgba(0,0,0,.22);transition:all .25s ease}
-.floating-wa-label{font-size:.8rem;font-weight:700;letter-spacing:.02em}
+.floating-wa{position:fixed;bottom:18px;right:16px;z-index:90;display:flex;align-items:center;gap:8px;padding:12px 18px 12px 14px;background:#0b6a38;color:#fff;border-radius:999px;font-size:1.3rem;box-shadow:0 4px 18px rgba(0,0,0,.22);transition:all .25s ease}
+.floating-wa-label{font-size:.8rem;font-weight:800;letter-spacing:.02em;color:#fff}
 .floating-wa:hover{transform:scale(1.06);box-shadow:0 6px 24px rgba(37,211,102,.48)}
 
 /* ═══════════════ ANIMATIONS ═══════════════ */

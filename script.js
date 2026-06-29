@@ -126,10 +126,15 @@
   const header = document.getElementById('header');
   if (header) {
     const heroEl = document.getElementById('home');
-    const onScroll = () => {
-      const heroH = heroEl ? heroEl.offsetHeight : window.innerHeight;
-      header.classList.toggle('scrolled', window.scrollY > heroH * 0.08);
+    let heroThreshold = window.innerHeight * 0.08;
+    const refreshHeroThreshold = () => {
+      heroThreshold = (heroEl ? heroEl.clientHeight : window.innerHeight) * 0.08;
     };
+    const onScroll = () => {
+      header.classList.toggle('scrolled', window.scrollY > heroThreshold);
+    };
+    refreshHeroThreshold();
+    window.addEventListener('resize', refreshHeroThreshold, { passive: true });
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
   }
